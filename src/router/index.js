@@ -1,23 +1,44 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+
+import { getAccessToken } from "../services/authServices";
+
+import TopChart from "../views/TopChart.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: Home
+    name: "TopChart",
+    component: TopChart
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+    path: "/new_releases",
+    name: "New Releases ",
+    component: () => import("../views/NewReleases.vue")
+  },
+  {
+    path: "/categories",
+    name: "Categories ",
+    component: () => import("../views/Categories.vue")
+  },
+  {
+    path: "/album/:id",
+    name: "Album",
+    component: () => import("../components/singleAlbum/SingleAlbum.vue")
+  },
+  {
+    path: "/lyrics",
+    name: "LyricsPage",
+    children: [
+      {
+        path: "/lyrics/:artist/:title",
+        name: "Track Lyrics",
+        component: () => import("../views/Lyrics.vue")
+      }
+    ],
+    component: () => import("../views/Lyrics.vue")
   }
 ];
 
@@ -27,4 +48,8 @@ const router = new VueRouter({
   routes
 });
 
+router.beforeEach(async (to, from, next) => {
+  await getAccessToken();
+  return next();
+});
 export default router;
