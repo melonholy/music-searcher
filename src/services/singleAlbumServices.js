@@ -54,3 +54,19 @@ export const getRecommendations = async id => {
     console.log(err);
   }
 };
+
+export const getPlaylist = async playlist_id => {
+  try {
+    const { data } = await httpService.get({
+      url: `https://api.spotify.com/v1/playlists/${playlist_id}`,
+      config: {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }
+    });
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};

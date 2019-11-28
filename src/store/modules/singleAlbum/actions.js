@@ -1,7 +1,8 @@
 import {
   getSingleAlbumInfo,
   getArtistAlbums,
-  getRecommendations
+  getRecommendations,
+  getPlaylist
 } from "../../../services/singleAlbumServices";
 
 export const actions = {
@@ -16,5 +17,9 @@ export const actions = {
   getRecommendations: async ({ commit }, id) => {
     const { tracks } = await getRecommendations(id);
     commit("getRecommendations", tracks);
+  },
+  getPlaylist: async ({ commit }, id) => {
+    const data = await getPlaylist(id);
+    commit("getPlaylist", data);
   }
 };

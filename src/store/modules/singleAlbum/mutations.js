@@ -7,5 +7,8 @@ export const mutations = {
   },
   getRecommendations(state, payload) {
     state.recommendations = payload;
+  },
+  getPlaylist(state, payload) {
+    state.playlist = payload;
   }
 };

@@ -2,10 +2,7 @@ import { actions } from "./actions";
 import { mutations } from "./mutations";
 
 const state = {
-  singleAlbum: {},
-  artistAlbums: [],
-  recommendations: [],
-  playlist: {}
+  category: []
 };
 
 export default {

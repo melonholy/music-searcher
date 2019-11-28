@@ -1,8 +1,8 @@
 <template>
   <CardContainer :showSpinner="loading">
-    <section class="category" v-for="item in categories" :key="item.id">
-      <router-link :to="{ name: 'Category', params: { name: item.id } }">
-        <img :src="item.icons[0].url" alt />
+    <section class="category" v-for="item in category" :key="item.id">
+      <router-link :to="{ name: 'Playlist', params: { id: item.id } }">
+        <img :src="item.images[0].url" />
         <section class="name">
           <p>{{ item.name }}</p>
         </section>
@@ -21,19 +21,22 @@ import CardContainer from "../slots/CardContainer";
 export default
 @Component({
   computed: {
-    ...mapState("navigation", ["categories"])
+    ...mapState("categories", ["category"])
   },
   methods: {
-    ...mapActions(["getCategories"])
+    ...mapActions(["getPlaylistByCategory"])
   },
   components: {
     CardContainer
   }
 })
-class Categories extends Vue {
+class Category extends Vue {
   loading = true;
   created() {
-    this.$store.dispatch("navigation/getCategories");
+    this.$store.dispatch(
+      "categories/getPlaylistByCategory",
+      this.$route.params.name
+    );
   }
   mounted() {
     this.loading = false;
@@ -61,8 +64,8 @@ class Categories extends Vue {
     align-items: center;
     top: 0;
     left: 0;
-    height: 295px;
-    width: 295px;
+    height: 325px;
+    width: 320px;
     background-color: #5a4c4ce1;
 
     p {

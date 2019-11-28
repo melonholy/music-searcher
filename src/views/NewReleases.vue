@@ -1,5 +1,5 @@
 <template>
-  <CardContainer :showSpinner="spinner">
+  <CardContainer :showSpinner="loading">
     <section class="album" v-for="item in newReleases" :key="item.id">
       <router-link :to="{ name: 'Album', params: { id: item.id } }">
         <img :src="item.images[1].url" />
@@ -32,12 +32,12 @@ export default
   }
 })
 class NewReleases extends Vue {
-  spinner = true;
+  loading = true;
   created() {
     this.$store.dispatch("navigation/getNewReleases");
   }
   mounted() {
-    this.spinner = false;
+    this.loading = false;
   }
 }
 </script>

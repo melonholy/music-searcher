@@ -24,20 +24,23 @@ const routes = [
     component: () => import("../views/Categories.vue")
   },
   {
+    path: "/categories/:name",
+    name: "Category",
+    component: () => import("../components/Category.vue")
+  },
+  {
     path: "/album/:id",
     name: "Album",
     component: () => import("../components/singleAlbum/SingleAlbum.vue")
   },
   {
-    path: "/lyrics",
-    name: "LyricsPage",
-    children: [
-      {
-        path: "/lyrics/:artist/:title",
-        name: "Track Lyrics",
-        component: () => import("../views/Lyrics.vue")
-      }
-    ],
+    path: "/playlist/:id",
+    name: "Playlist",
+    component: () => import("../components/Playlist.vue")
+  },
+  {
+    path: "/lyrics/:artist?/:title?",
+    name: "Lyrics Page",
     component: () => import("../views/Lyrics.vue")
   }
 ];
@@ -45,7 +48,10 @@ const routes = [
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior() {
+    return { x: 0, y: 0 };
+  }
 });
 
 router.beforeEach(async (to, from, next) => {
