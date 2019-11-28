@@ -22,7 +22,7 @@
 import { Carousel, Slide } from "vue-carousel";
 
 export default {
-  name: "carouselContainer",
+  name: "CarouselContainer",
   components: {
     carousel: Carousel,
     slide: Slide

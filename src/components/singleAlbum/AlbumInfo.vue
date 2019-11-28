@@ -114,39 +114,45 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Component from "vue-class-component";
-
-import carouselContainer from "../Carousel";
-
-export default
-@Component({
+export default {
+  name: "AlbumInfo",
   props: {
     singleAlbum: Object
   },
-  components: {
-    carouselContainer
+  computed: {
+    album() {
+      return this.$props.singleAlbum;
+    }
+  },
+  methods: {
+    duration(time) {
+      return new Date(time).toLocaleTimeString("en-US", {
+        minute: "numeric",
+        second: "numeric"
+      });
+    },
+    releaseDate(date) {
+      return new Date(date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+  },
+  async created() {
+    await this.$store.dispatch(
+      "categories/getPlaylistByCategory",
+      this.$route.params.name
+    );
+  },
+  async beforeRouteUpdate(to, from, next) {
+    await this.$store.dispatch(
+      "categories/getPlaylistByCategory",
+      to.params.name
+    );
+    next();
   }
-})
-class AlbumInfo extends Vue {
-  get album() {
-    return this.$props.singleAlbum;
-  }
-
-  duration(time) {
-    return new Date(time).toLocaleTimeString("en-US", {
-      minute: "numeric",
-      second: "numeric"
-    });
-  }
-  releaseDate(date) {
-    return new Date(date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric"
-    });
-  }
-}
+};
 </script>
 
 <style lang="scss" scoped>

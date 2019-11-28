@@ -6,27 +6,39 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Component from "vue-class-component";
-
 import carouselContainer from "../Carousel";
 
-export default
-@Component({
+export default {
+  name: "MoreAlbumsByArtist",
   props: {
     albums: Array
   },
+  computed: {
+    albumsComputed() {
+      return this.$props.albums.filter(
+        album => album.id !== this.$route.params.id
+      );
+    }
+  },
   components: {
     carouselContainer
+  },
+  methods: {
+    duration(time) {
+      return new Date(time).toLocaleTimeString("en-US", {
+        minute: "numeric",
+        second: "numeric"
+      });
+    },
+    releaseDate(date) {
+      return new Date(date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
   }
-})
-class MoreAlbumsByArtist extends Vue {
-  get albumsComputed() {
-    return this.$props.albums.filter(
-      album => album.id !== this.$route.params.id
-    );
-  }
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 <template>
-  <CardContainer :showSpinner="loading">
+  <CardContainer :showSpinner="isLoading">
     <section class="album" v-for="item in newReleases" :key="item.id">
       <router-link :to="{ name: 'Album', params: { id: item.id } }">
         <img :src="item.images[1].url" />
@@ -13,33 +13,35 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Component from "vue-class-component";
 import { mapActions, mapState } from "vuex";
 
 import CardContainer from "../slots/CardContainer";
 
-export default
-@Component({
+export default {
+  name: "NewReleases",
+  props: {
+    recomendations: Array,
+    artistId: String
+  },
+  data: function() {
+    return {
+      isLoading: true
+    };
+  },
   computed: {
     ...mapState("navigation", ["newReleases"])
+  },
+  components: {
+    CardContainer
   },
   methods: {
     ...mapActions(["getNewReleases"])
   },
-  components: {
-    CardContainer
+  async created() {
+    await this.$store.dispatch("navigation/getNewReleases");
+    this.isLoading = false;
   }
-})
-class NewReleases extends Vue {
-  loading = true;
-  created() {
-    this.$store.dispatch("navigation/getNewReleases");
-  }
-  mounted() {
-    this.loading = false;
-  }
-}
+};
 </script>
 
 <style lang="scss" scoped>

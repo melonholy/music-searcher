@@ -1,5 +1,5 @@
 <template>
-  <CardContainer :showSpinner="loading">
+  <CardContainer :showSpinner="isLoading">
     <section class="category" v-for="item in category" :key="item.id">
       <router-link :to="{ name: 'Playlist', params: { id: item.id } }">
         <img :src="item.images[0].url" />
@@ -12,14 +12,17 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Component from "vue-class-component";
 import { mapActions, mapState } from "vuex";
 
 import CardContainer from "../slots/CardContainer";
 
-export default
-@Component({
+export default {
+  name: "Category",
+  data: function() {
+    return {
+      isLoading: true
+    };
+  },
   computed: {
     ...mapState("categories", ["category"])
   },
@@ -28,20 +31,24 @@ export default
   },
   components: {
     CardContainer
-  }
-})
-class Category extends Vue {
-  loading = true;
-  created() {
-    this.$store.dispatch(
+  },
+  async created() {
+    await this.$store.dispatch(
       "categories/getPlaylistByCategory",
       this.$route.params.name
     );
+    this.isLoading = false;
+  },
+  async beforeRouteUpdate(to, from, next) {
+    this.isLoading = true;
+    await this.$store.dispatch(
+      "categories/getPlaylistByCategory",
+      to.params.name
+    );
+    this.isLoading = false;
+    next();
   }
-  mounted() {
-    this.loading = false;
-  }
-}
+};
 </script>
 
 <style lang="scss" scoped>

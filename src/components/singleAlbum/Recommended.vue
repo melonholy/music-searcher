@@ -6,33 +6,45 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Component from "vue-class-component";
-
 import carouselContainer from "../Carousel";
 
-export default
-@Component({
+export default {
+  name: "Recommended",
   props: {
     recomendations: Array,
     artistId: String
   },
+  computed: {
+    recomendationsComp() {
+      const data = this.$props.recomendations
+        .filter(item => {
+          return item.artists[0].id !== this.$props.artistId;
+        })
+        .map(item => {
+          return item.album;
+        });
+      return data;
+    }
+  },
   components: {
     carouselContainer
-  }
-})
-class Recommended extends Vue {
-  get recomendationsComp() {
-    const data = this.$props.recomendations
-      .filter(item => {
-        return item.artists[0].id !== this.$props.artistId;
-      })
-      .map(item => {
-        return item.album;
+  },
+  methods: {
+    duration(time) {
+      return new Date(time).toLocaleTimeString("en-US", {
+        minute: "numeric",
+        second: "numeric"
       });
-    return data;
+    },
+    releaseDate(date) {
+      return new Date(date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

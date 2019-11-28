@@ -24,7 +24,7 @@
         Search
       </div>
     </div>
-    <spinner v-if="loading" :loading="true" />
+    <spinner v-if="isLoading" :loading="true" />
     <div v-else-if="this.$route.params.artist && lyrics" class="lyrics">
       <p class="artist">{{ this.$route.params.artist }}</p>
       <p class="title">{{ this.$route.params.title }}</p>
@@ -43,7 +43,7 @@ export default {
   components: { Spinner },
   data: function() {
     return {
-      loading: true,
+      isLoading: true,
       artist: this.$route.params.artist,
       title: this.$route.params.title
     };
@@ -65,12 +65,12 @@ export default {
   async created() {
     if (this.$route.params.artist && this.$route.params.title)
       await this.$store.dispatch("navigation/getLyrics", this.$route.params);
-    this.loading = false;
+    this.isLoading = false;
   },
   async beforeRouteUpdate(to, from, next) {
-    this.loading = true;
+    this.isLoading = true;
     await this.$store.dispatch("navigation/getLyrics", to.params);
-    this.loading = false;
+    this.isLoading = false;
 
     next();
   }
@@ -145,7 +145,7 @@ export default {
 .not-found {
   color: #fff;
   font-size: 60px;
-  padding:15% 0;
+  padding: 15% 0;
   text-align: center;
 }
 </style>

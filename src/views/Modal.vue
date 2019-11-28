@@ -12,18 +12,16 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Component from "vue-class-component";
-
 import { Links } from "../utils/constants";
 
-export default
-@Component
-class Modal extends Vue {
-  get spotifyLogin() {
-    return Links.spotifyLogin;
+export default {
+  name: "Modal",
+  computed: {
+    spotifyLogin(){
+      return Links.spotifyLogin
+    }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -83,4 +81,3 @@ class Modal extends Vue {
   transform: scale(1.1);
 }
 </style>
-  
