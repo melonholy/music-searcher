@@ -138,19 +138,6 @@ export default {
         year: "numeric"
       });
     }
-  },
-  async created() {
-    await this.$store.dispatch(
-      "categories/getPlaylistByCategory",
-      this.$route.params.name
-    );
-  },
-  async beforeRouteUpdate(to, from, next) {
-    await this.$store.dispatch(
-      "categories/getPlaylistByCategory",
-      to.params.name
-    );
-    next();
   }
 };
 </script>

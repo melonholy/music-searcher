@@ -20,9 +20,9 @@
           v-on:keyup.enter="searchLyrics"
         />
       </div>
-      <div @click="searchLyrics" class="search-button">
+      <button @click="searchLyrics" class="search-button">
         Search
-      </div>
+      </button>
     </div>
     <spinner v-if="isLoading" :loading="true" />
     <div v-else-if="this.$route.params.artist && lyrics" class="lyrics">
@@ -30,7 +30,12 @@
       <p class="title">{{ this.$route.params.title }}</p>
       <div class="text">{{ lyrics }}</div>
     </div>
-    <div v-else class="not-found">Lyrics not found</div>
+    <div
+      v-else-if="this.$route.params.artist || this.$route.params.title"
+      class="not-found"
+    >
+      Lyrics not found
+    </div>
   </section>
 </template>
 

@@ -5,11 +5,9 @@ import {
 } from "../../../services/headerService";
 
 export const actions = {
-  getNewReleases: async ({ commit }) => {
-    const {
-      albums: { items }
-    } = await getNewReleases();
-    commit("getNewReleases", items);
+  getNewReleases: async ({ commit }, next) => {
+    const { albums } = await getNewReleases(next);
+    commit("getNewReleases", albums);
   },
   getCategories: async ({ commit }) => {
     const {

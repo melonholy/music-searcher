@@ -41,10 +41,12 @@ export default {
       padding: 15px;
       margin: 15px;
 
-      &:hover {
+      &:hover,
+      &:focus {
         transition: 0.3s;
         font-size: 24px;
         white-space: nowrap;
+        outline: none;
       }
 
       &:before {

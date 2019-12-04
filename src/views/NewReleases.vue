@@ -1,6 +1,6 @@
 <template>
   <CardContainer :showSpinner="isLoading">
-    <section class="album" v-for="item in newReleases" :key="item.id">
+    <section class="album" v-for="item in newReleases.items" :key="item.id">
       <router-link :to="{ name: 'Album', params: { id: item.id } }">
         <img :src="item.images[1].url" />
         <section class="artist">
@@ -25,7 +25,8 @@ export default {
   },
   data: function() {
     return {
-      isLoading: true
+      isLoading: null,
+      scrolledToBottom: true
     };
   },
   computed: {
@@ -35,11 +36,37 @@ export default {
     CardContainer
   },
   methods: {
-    ...mapActions(["getNewReleases"])
+    ...mapActions(["getNewReleases"]),
+    scroll() {
+      window.onscroll = () => {
+        let bottomOfWindow =
+          window.scrollY + window.innerHeight ===
+          document.documentElement.offsetHeight;
+        if (bottomOfWindow) {
+          if (this.newReleases.next && this.scrolledToBottom) {
+            this.scrolledToBottom = false;
+            this.$store
+              .dispatch("navigation/getNewReleases", this.newReleases.next)
+              .then(
+                () => {
+                  this.scrolledToBottom = true;
+                },
+                error => {
+                  console.log(error);
+                }
+              );
+          }
+        }
+      };
+    }
   },
   async created() {
+    this.isLoading = true;
     await this.$store.dispatch("navigation/getNewReleases");
     this.isLoading = false;
+  },
+  async mounted() {
+    this.scroll();
   }
 };
 </script>

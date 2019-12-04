@@ -1,9 +1,9 @@
 import { httpService } from "./httpService";
 
-export const getNewReleases = async () => {
+export const getNewReleases = async next => {
   try {
     const { data } = await httpService.get({
-      url: "https://api.spotify.com/v1/browse/new-releases",
+      url: next ? next : "https://api.spotify.com/v1/browse/new-releases",
       params: {
         country: "us",
         limit: 40

@@ -15,22 +15,17 @@
 </template>
 
 <script>
-import Vue from "vue";
-import Component from "vue-class-component";
-
 import PulseLoader from "vue-spinner/src/PulseLoader.vue";
 
-export default
-@Component({
+export default {
+  name: "CardContainer",
   props: {
     showSpinner: {
-      default: true,
       type: Boolean
     }
   },
   components: { PulseLoader }
-})
-class CardContainer extends Vue {}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -2,7 +2,7 @@
   <main>
     <span class="chart-title">Top chart</span>
     <section class="track-container">
-      <article v-for="track in chart" :key="track.id" class="track">
+      <article v-for="track in chart.items" :key="track.id" class="track">
         <img :src="track.track.album.images[0].url" />
         <div class="title">
           <span class="artist">{{ track.track.artists[0].name }}</span>
@@ -23,19 +23,43 @@ import { mapActions, mapState } from "vuex";
 
 export default {
   name: "home",
+  data: function() {
+    return {
+      scrolledToBottom: true,
+      isLoadingMore: null
+    };
+  },
   computed: {
     ...mapState("chartPage", ["chart"])
   },
   methods: {
-    ...mapActions(["getChart"])
+    ...mapActions(["getChart"]),
+    scroll() {
+      window.onscroll = () => {
+        let bottomOfWindow =
+          window.scrollY + window.innerHeight ===
+          document.documentElement.offsetHeight;
+        if (bottomOfWindow) {
+          if (this.chart.next && this.scrolledToBottom) {
+            this.scrolledToBottom = false;
+            this.$store.dispatch("chartPage/getChart", this.chart.next).then(
+              () => {
+                this.scrolledToBottom = true;
+              },
+              error => {
+                console.log(error);
+              }
+            );
+          }
+        }
+      };
+    }
   },
   created() {
     this.$store.dispatch("chartPage/getChart");
   },
-  beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch("chartPage/getChart");
-
-    next();
+  mounted() {
+    this.scroll();
   }
 };
 </script>
@@ -48,8 +72,8 @@ export default {
   font-family: "Bebas Neue", cursive;
 }
 .track-container {
-  width: 100%;
-  margin: 0 10px;
+  width: 98%;
+  margin: 0 auto;
   background-color: #36363a;
 
   .track {
