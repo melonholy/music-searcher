@@ -1,4 +1,4 @@
-# dota-helper
+# music-helper
 
 ## Project setup
 ```
