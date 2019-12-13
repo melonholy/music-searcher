@@ -2,7 +2,7 @@
   <CardContainer :showSpinner="isLoading">
     <section class="category" v-for="item in categories" :key="item.id">
       <router-link :to="{ name: 'Category', params: { name: item.id } }">
-        <img :src="item.icons[0].url" alt />
+        <img :src="image(item)" alt />
         <section class="name">
           <p>{{ item.name }}</p>
         </section>
@@ -22,7 +22,7 @@ export default {
     recomendations: Array,
     artistId: String
   },
-  data: function() {
+  data() {
     return {
       isLoading: true
     };
@@ -34,10 +34,13 @@ export default {
     CardContainer
   },
   methods: {
-    ...mapActions(["getCategories"])
+    ...mapActions("navigation", ["getCategories"]),
+    image(item) {
+      return item.icons[0].url;
+    }
   },
   async created() {
-    await this.$store.dispatch("navigation/getCategories");
+    await this.getCategories();
     this.isLoading = false;
   }
 };

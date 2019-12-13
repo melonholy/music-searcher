@@ -2,9 +2,14 @@
   <CardContainer :showSpinner="isLoading">
     <section class="album" v-for="item in newReleases.items" :key="item.id">
       <router-link :to="{ name: 'Album', params: { id: item.id } }">
-        <img :src="item.images[1].url" />
+        <img :src="image(item)" />
         <section class="artist">
-          <p>{{ item.artists[0].name }}</p>
+          <div class="names">
+            <p v-for="(artist, index) in item.artists" :key="artist.name">
+              {{ artist.name
+              }}{{ index !== item.artists.length - 1 ? "," : "" }}
+            </p>
+          </div>
           <p>{{ item.name }}</p>
         </section>
       </router-link>
@@ -23,7 +28,7 @@ export default {
     recomendations: Array,
     artistId: String
   },
-  data: function() {
+  data() {
     return {
       isLoading: null,
       scrolledToBottom: true
@@ -36,7 +41,10 @@ export default {
     CardContainer
   },
   methods: {
-    ...mapActions(["getNewReleases"]),
+    ...mapActions("navigation", ["getNewReleases"]),
+    image(album) {
+      return album.images[1].url;
+    },
     scroll() {
       window.onscroll = () => {
         let bottomOfWindow =
@@ -45,16 +53,14 @@ export default {
         if (bottomOfWindow) {
           if (this.newReleases.next && this.scrolledToBottom) {
             this.scrolledToBottom = false;
-            this.$store
-              .dispatch("navigation/getNewReleases", this.newReleases.next)
-              .then(
-                () => {
-                  this.scrolledToBottom = true;
-                },
-                error => {
-                  console.log(error);
-                }
-              );
+            this.getNewReleases(this.newReleases.next).then(
+              () => {
+                this.scrolledToBottom = true;
+              },
+              error => {
+                console.log(error);
+              }
+            );
           }
         }
       };
@@ -62,7 +68,7 @@ export default {
   },
   async created() {
     this.isLoading = true;
-    await this.$store.dispatch("navigation/getNewReleases");
+    await this.getNewReleases(this.newReleases.next);
     this.isLoading = false;
   },
   async mounted() {
@@ -101,10 +107,19 @@ export default {
     background-color: #5a4c4ce1;
 
     p {
-      margin: 16px 20px;
+      width: 90%;
+      text-align: center;
+      margin: 0;
       font-size: 24px;
       font-weight: 600;
       color: #fff;
+    }
+    .names {
+      width: 90%;
+      margin: 16px 0;
+      p {
+        width: 100%;
+      }
     }
   }
 }

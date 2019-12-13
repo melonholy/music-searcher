@@ -3,14 +3,22 @@
     <section class="artist-info">
       <article>
         <p>{{ album.name }}</p>
-        <p v-if="album.artists">{{ album.artists[0].name }}</p>
+        <div class="artists">
+          <p
+            v-for="(artistName, index) in album.artists"
+            :key="artistName.name"
+          >
+            {{ artistName.name
+            }}{{ index !== album.artists.length - 1 ? "," : "" }}
+          </p>
+        </div>
       </article>
-      <a v-if="!album.tracks.items[0].track">View More by this Artist</a>
+      <a v-if="!isPlaylist">View More by this Artist</a>
     </section>
     <div class="common-and-track-info">
       <section class="common-info">
         <section class="title">
-          <img :src="album.images[0].url" alt class="album-logo" />
+          <img :src="image(album)" alt class="album-logo" />
           <a
             :href="album.external_urls.spotify"
             target="about_blank"
@@ -18,11 +26,11 @@
           >
             <img src="../../assets/logo.png" alt class="spotify-logo" />
           </a>
-          <div v-if="!album.tracks.items[0].track" class="release-date">
+          <div v-if="!isPlaylist" class="release-date">
             <p>Released:</p>
             <p>{{ releaseDate(album.release_date) }}</p>
           </div>
-          <p v-if="!album.tracks.items[0].track" class="copyright">
+          <p v-if="!isPlaylist" class="copyright">
             {{ album.copyrights[0].text }}
           </p>
         </section>
@@ -46,21 +54,25 @@
             <span v-if="item.track" v-bind:key="item.track.name">{{
               index + 1
             }}</span>
-            <span v-else v-bind:key="item.name">{{ item.track_number }}</span>
+            <span v-else-if="item.track_number" v-bind:key="item.name">{{
+              item.track_number
+            }}</span>
             <span v-if="item.track" v-bind:key="item.track.name + 1">{{
               item.track.name
             }}</span>
-            <span v-else v-bind:key="item.name + 1">{{ item.name }}</span>
-            <span v-if="item.track" v-bind:key="item.track.name + 2">{{
-              item.track.artists[0].name
+            <span v-else-if="item.name" v-bind:key="item.name + 1">{{
+              item.name
             }}</span>
-            <span v-else v-bind:key="item.name + 2">{{
-              item.artists[0].name
+            <span v-if="item.track" v-bind:key="item.track.name + 2">{{
+              name(item.track)
+            }}</span>
+            <span v-else-if="item.artists" v-bind:key="item.name + 2">{{
+              name(item)
             }}</span>
             <span v-if="item.track" v-bind:key="item.track.name + 3">{{
               duration(item.track.duration_ms)
             }}</span>
-            <span v-else v-bind:key="item.name + 3">{{
+            <span v-else-if="item.duration_ms" v-bind:key="item.name + 3">{{
               duration(item.duration_ms)
             }}</span>
             <a
@@ -72,7 +84,7 @@
               View in Spotify
             </a>
             <a
-              v-else
+              v-else-if="item.external_urls"
               v-bind:key="item.name + 4"
               :href="item.external_urls.spotify"
               target="about_blank"
@@ -93,7 +105,7 @@
               Lyrics
             </router-link>
             <router-link
-              v-else
+              v-else-if="item.artists"
               v-bind:key="item.name + 5"
               :to="{
                 name: 'Lyrics Page',
@@ -122,6 +134,9 @@ export default {
   computed: {
     album() {
       return this.$props.singleAlbum;
+    },
+    isPlaylist() {
+      return this.album.tracks.items[0].track;
     }
   },
   methods: {
@@ -137,6 +152,12 @@ export default {
         day: "numeric",
         year: "numeric"
       });
+    },
+    image(album) {
+      return album.images[0].url;
+    },
+    name(item) {
+      return item.artists[0].name;
     }
   }
 };
@@ -175,11 +196,16 @@ export default {
         font-size: 28px;
         font-weight: 800;
         color: #fafafa;
+      }
 
-        &:last-of-type {
-          display: flex;
-          justify-content: center;
-          align-items: center;
+      .artists {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        p {
+          white-space: nowrap;
+          width: 100%;
+          margin: 0;
           font-size: 24px;
           font-weight: 400;
           color: #b3b3b3;

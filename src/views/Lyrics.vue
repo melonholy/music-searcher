@@ -46,7 +46,7 @@ import Spinner from "../components/Spinner";
 export default {
   name: "Lyrics",
   components: { Spinner },
-  data: function() {
+  data() {
     return {
       isLoading: true,
       artist: this.$route.params.artist,
@@ -57,7 +57,7 @@ export default {
     ...mapState("navigation", ["lyrics"])
   },
   methods: {
-    ...mapActions(["getLyrics"]),
+    ...mapActions("navigation", ["getLyrics"]),
     searchLyrics() {
       this.artist && this.title
         ? this.$router.push({
@@ -69,12 +69,12 @@ export default {
   },
   async created() {
     if (this.$route.params.artist && this.$route.params.title)
-      await this.$store.dispatch("navigation/getLyrics", this.$route.params);
+      await this.getLyrics(this.$route.params);
     this.isLoading = false;
   },
   async beforeRouteUpdate(to, from, next) {
     this.isLoading = true;
-    await this.$store.dispatch("navigation/getLyrics", to.params);
+    await this.getLyrics(to.params);
     this.isLoading = false;
 
     next();

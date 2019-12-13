@@ -3,9 +3,9 @@
     <span class="chart-title">Top chart</span>
     <section class="track-container">
       <article v-for="track in chart.items" :key="track.id" class="track">
-        <img :src="track.track.album.images[0].url" />
+        <img :src="image(track)" />
         <div class="title">
-          <span class="artist">{{ track.track.artists[0].name }}</span>
+          <span class="artist">{{ artist(track) }}</span>
           <span class="name">{{ track.track.name }}</span>
           <router-link
             :to="{ name: 'Album', params: { id: track.track.album.id } }"
@@ -23,7 +23,7 @@ import { mapActions, mapState } from "vuex";
 
 export default {
   name: "home",
-  data: function() {
+  data() {
     return {
       scrolledToBottom: true,
       isLoadingMore: null
@@ -33,7 +33,13 @@ export default {
     ...mapState("chartPage", ["chart"])
   },
   methods: {
-    ...mapActions(["getChart"]),
+    ...mapActions("chartPage", ["getChart"]),
+    image(track) {
+      return track.track.album.images[0].url;
+    },
+    artist(track) {
+      return track.track.artists[0].name;
+    },
     scroll() {
       window.onscroll = () => {
         let bottomOfWindow =
@@ -42,7 +48,7 @@ export default {
         if (bottomOfWindow) {
           if (this.chart.next && this.scrolledToBottom) {
             this.scrolledToBottom = false;
-            this.$store.dispatch("chartPage/getChart", this.chart.next).then(
+            this.getChart(this.chart.next).then(
               () => {
                 this.scrolledToBottom = true;
               },
@@ -56,7 +62,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch("chartPage/getChart");
+    this.getChart(this.chart.next);
   },
   mounted() {
     this.scroll();

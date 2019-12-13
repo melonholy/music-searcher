@@ -32,6 +32,14 @@ export default {
       return this.$props.mappedItems;
     }
   },
+  methods: {
+    image(track) {
+      return track.track.album.images[0].url;
+    },
+    artist(track) {
+      return track.track.artists[0].name;
+    }
+  },
   props: {
     mappedItems: Array
   }

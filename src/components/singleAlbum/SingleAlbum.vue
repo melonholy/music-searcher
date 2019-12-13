@@ -35,7 +35,11 @@ export default {
     ])
   },
   methods: {
-    ...mapActions(["getSingleAlbum", "getArtistAlbums", "getRecommendations"])
+    ...mapActions("singleAlbum", [
+      "getSingleAlbum",
+      "getArtistAlbums",
+      "getRecommendations"
+    ])
   },
   components: {
     Spinner,
@@ -44,31 +48,16 @@ export default {
     AlbumInfo
   },
   async created() {
-    await this.$store.dispatch(
-      "singleAlbum/getSingleAlbum",
-      this.$route.params.id
-    );
-    await this.$store.dispatch(
-      "singleAlbum/getArtistAlbums",
-      this.singleAlbum.artists[0].id
-    );
-    await this.$store.dispatch(
-      "singleAlbum/getRecommendations",
-      this.singleAlbum.artists[0].id
-    );
+    await this.getSingleAlbum(this.$route.params.id);
+    await this.getArtistAlbums(this.singleAlbum.artists[0].id);
+    await this.getRecommendations(this.singleAlbum.artists[0].id);
     this.isLoading = false;
   },
   async beforeRouteUpdate(to, from, next) {
     this.isLoading = true;
-    await this.$store.dispatch("singleAlbum/getSingleAlbum", to.params.id);
-    await this.$store.dispatch(
-      "singleAlbum/getArtistAlbums",
-      this.singleAlbum.artists[0].id
-    );
-    await this.$store.dispatch(
-      "singleAlbum/getRecommendations",
-      this.singleAlbum.artists[0].id
-    );
+    await this.getSingleAlbum(to.params.id);
+    await this.getArtistAlbums(this.singleAlbum.artists[0].id);
+    await this.getRecommendations(this.singleAlbum.artists[0].id);
     this.isLoading = false;
 
     next();

@@ -13,7 +13,7 @@ import AlbumInfo from "./singleAlbum/AlbumInfo";
 
 export default {
   name: "SingleAlbum",
-  data: function() {
+  data() {
     return {
       isLoading: true
     };
@@ -22,22 +22,19 @@ export default {
     ...mapState("singleAlbum", ["playlist"])
   },
   methods: {
-    ...mapActions(["getPlaylist"])
+    ...mapActions("singleAlbum", ["getPlaylist"])
   },
   components: {
     Spinner,
     AlbumInfo
   },
   async created() {
-    await this.$store.dispatch(
-      "singleAlbum/getPlaylist",
-      this.$route.params.id
-    );
+    await this.getPlaylist(this.$route.params.id);
     this.isLoading = false;
   },
   async beforeRouteUpdate(to, from, next) {
     this.isLoading = true;
-    await this.$store.dispatch("singleAlbum/getPlaylist", to.params.id);
+    await this.getPlaylist(to.params.id);
     this.isLoading = false;
     next();
   }
